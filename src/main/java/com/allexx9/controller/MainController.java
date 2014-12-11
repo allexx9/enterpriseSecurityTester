@@ -15,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
@@ -25,12 +26,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
-import java.awt.event.MouseEvent;
 import java.io.*;
-import java.net.URL;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by adm on 04.12.2014.
@@ -61,12 +58,18 @@ public class MainController {
     @FXML public BarChart<String,Double> barChart;
     @FXML private CategoryAxis xAxis;
 
+
+    public BarChart improvedBarChart;
+    public CategoryAxis ixAxis = new CategoryAxis();
+    public NumberAxis iyAxis = new NumberAxis();
+
     private ObservableList<String> categoryIds = FXCollections.observableArrayList();
     final ContextMenu contextMenu = new ContextMenu();
     List<String> typesList = new ArrayList<String>();
     @FXML
     private void initialize() throws IOException {
-        integerQuestionTypes.addAll(getIntegerQuestioinsType());
+
+        integerQuestionTypes.addAll(getIntegerQuestionsType());
         logger.error(integerQuestionTypes);
         typesList.addAll(getQuestionsType());
         final ObservableList<String> typesObservableList = FXCollections.observableList(typesList);
@@ -83,14 +86,7 @@ public class MainController {
                 }
             }
         });
-        barChart.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
-            @Override
-            public void handle(javafx.scene.input.MouseEvent event) {
-                if (MouseButton.SECONDARY.equals(event.getButton())) {
-                    contextMenu.show(((Node) (event.getSource())).getScene().getWindow(), event.getScreenX(), event.getScreenY());
-                }
-            }
-        });
+
         logger.error(FILENAME);
         stringCount = getStringCount(FILENAME);
         recordsArray = new Record[stringCount];
@@ -113,6 +109,8 @@ public class MainController {
         helpTab.setContent(wv);
         resultTab.setDisable(true);
         loadingHelpHtml();
+
+
         mainWindowTabPane.getSelectionModel().selectedItemProperty().addListener(
                 new ChangeListener<Tab>() {
                     @Override
@@ -165,6 +163,7 @@ public class MainController {
             }
         });
 
+
         yes.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED,new EventHandler<javafx.scene.input.MouseEvent>() {
             @Override
             public void handle(javafx.scene.input.MouseEvent event) {
@@ -178,8 +177,7 @@ public class MainController {
 //                        Main.showSecondStage();
 //                        ((Node)(event.getSource())).getScene().getWindow().hide();
                         logger.error("завершено");
-                        finalisedData();
-                        resultTab.setDisable(false);
+                        initializeBarChart();
                         mainWindowTabPane.getSelectionModel().select(resultTab);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -204,7 +202,7 @@ public class MainController {
                     question.setText("Тест завершен!");
                     try {
                         logger.error("завершено");
-                        finalisedData();
+                        initializeBarChart();
                         resultTab.setDisable(false);
                         mainWindowTabPane.getSelectionModel().select(resultTab);
 //                        ((Node)(event.getSource())).getScene().getWindow().hide();
@@ -241,11 +239,6 @@ public class MainController {
         logger.error(Arrays.asList(recordsArray).toString());
     }
 
-
-    private void loadingHelp() throws IOException {
-        final WebEngine webEngine = ((WebView) helpTab.getContent()).getEngine();
-        webEngine.loadContent(returnXmlContext(getClass().getResourceAsStream("/html/help.html")), "text/html");
-    }
     private void loadingHelpHtml() throws FileNotFoundException {
         Task<String> reloader = new Task<String>() {
             @Override
@@ -363,15 +356,18 @@ public class MainController {
         }
     }
 
-    private void finalisedData(){
+    private void performBarChart() throws IOException {
+        barChart.setBarGap(0.2);
         List<Integer> listIDs = new ArrayList<Integer>(testValues.keySet());
         List<String> stringListIDs = new ArrayList<String>(listIDs.size());
         for (Integer myInt : listIDs) {
             stringListIDs.add(String.valueOf(myInt));
         }
         Collections.sort(stringListIDs);
+        List<String> questionsTypeList = new ArrayList<String>();
+        questionsTypeList.addAll(getQuestionsType());
         logger.error(stringListIDs);
-        categoryIds.addAll(stringListIDs);
+        categoryIds.addAll(questionsTypeList);
         logger.error(categoryIds);
         xAxis.setCategories(categoryIds);
         setSecurityTestData(testValues);
@@ -390,7 +386,7 @@ public class MainController {
         reader.close();
         return questionsType;
     }
-    private Set<Integer> getIntegerQuestioinsType() throws IOException {
+    private Set<Integer> getIntegerQuestionsType() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(MainController.class.getResourceAsStream(FILENAME)));
         String line;
         Set<Integer> questionsType = new HashSet<Integer>();
@@ -400,5 +396,50 @@ public class MainController {
         }
         reader.close();
         return questionsType;
+    }
+
+    public ObservableList<XYChart.Series<String, Double>> getChartData() throws IOException {
+        ObservableList<XYChart.Series<String, Double>> answer = FXCollections.observableArrayList();
+        List<String> questionsTypeList = new ArrayList<String>();
+        questionsTypeList.addAll(getQuestionsType());
+        XYChart.Series<String, Double> series = new XYChart.Series<String, Double>();
+        for (int i = 0;i<questionsTypeList.size();i++){
+            String item = questionsTypeList.get(i);
+            int key = Integer.parseInt(item.substring(item.indexOf("(")+1,item.lastIndexOf(')')));
+            double value = testValues.get(key);
+            series.getData().add(new XYChart.Data(item, value));
+        }
+
+        //double aValue = 17.56;
+        //double cValue = 17.06;
+        //ObservableList<XYChart.Series<String, Double>> answer = FXCollections.observableArrayList();
+        //XYChart.Series<String, Double> aSeries = new XYChart.Series<String, Double>();
+        //XYChart.Series<String, Double> cSeries = new XYChart.Series<String, Double>();
+        //aSeries.setName("a");
+        //cSeries.setName("C");
+
+//        for (int i = 2011; i < 2021; i++) {
+//            aSeries.getData().add(new XYChart.Data(Integer.toString(i), aValue));
+//            aValue = aValue + Math.random() - .5;
+//            cSeries.getData().add(new XYChart.Data(Integer.toString(i), cValue));
+//            cValue = cValue + Math.random() - .5;
+//        }
+
+        answer.addAll(series);
+        return answer;
+    }
+    private void initializeBarChart() throws IOException {
+        improvedBarChart = new  BarChart(ixAxis,iyAxis, getChartData());
+        improvedBarChart.setBarGap(0.2);
+        resultTab.setContent(improvedBarChart);
+        resultTab.setDisable(false);
+        improvedBarChart.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
+            @Override
+            public void handle(javafx.scene.input.MouseEvent event) {
+                if (MouseButton.SECONDARY.equals(event.getButton())) {
+                    contextMenu.show(((Node) (event.getSource())).getScene().getWindow(), event.getScreenX(), event.getScreenY());
+                }
+            }
+        });
     }
 }

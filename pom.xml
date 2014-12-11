@@ -95,7 +95,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <exeFileName>block</exeFileName>
         <product.title>Security tester</product.title>
-        <product.company>Allexx9_dev</product.company>
+        <product.company>аllexx9Dev</product.company>
         <product.year>2014</product.year>
         <jdkVersion>1.4</jdkVersion>
     </properties>
