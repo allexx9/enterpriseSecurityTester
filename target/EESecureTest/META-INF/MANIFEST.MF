@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Built-By: adm
+Class-Path: lib/log4j-core-2.1.jar lib/log4j-api-2.1.jar
+Created-By: Apache Maven 3.2.3
+Build-Jdk: 1.8.0_20
+Main-Class: com.allexx9.controller.Main
+

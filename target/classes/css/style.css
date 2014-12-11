@@ -1,0 +1,75 @@
+/*.buttonOK {
+  -fx-background: white;
+}
+.buttonOK:hover {
+  -fx-background: #00AE68;
+ }
+
+.buttonNO {
+  -fx-background: white;
+}
+.buttonNO:hover {
+    -fx-text-fill:red;
+}
+*/
+.header{
+      -fx-font-size: 21pt;
+      -fx-font-family: "Segoe UI Light";
+      -fx-text-fill: white;
+  }
+.header:hover {
+
+}
+.buttonStart {
+    -fx-padding: 5 22 5 22;
+    -fx-border-color: #e2e2e2;
+    -fx-border-width: 2;
+
+    -fx-background-radius: 0;
+
+/*    -fx-background-color: #1d1d1d; */
+
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 11pt;
+    -fx-text-fill: #d8d8d8;
+}
+.buttonStart:hover {
+   /* -fx-background-color: #3a3a3a;*/
+}
+.buttonStart:pressed {
+   /*  -fx-background-color: white; */
+    -fx-text-fill: #1d1d1d;
+}
+
+.buttonStart:focused
+{
+ /*   -fx-border-color: white, white;*/
+    -fx-border-width: 1, 1;
+    -fx-border-style: solid, segments(1, 1);
+    -fx-border-radius: 0, 0;
+    -fx-border-insets: 1 1 1 1, 0;
+}
+
+.buttonStart:disabled, .button:default:disabled
+{
+    -fx-opacity: 0.4;
+ /*   -fx-background-color: #1d1d1d;*/
+    -fx-text-fill: white;
+}
+
+.buttonStart:default
+{
+  /*  -fx-background-color: #008287;*/
+    -fx-text-fill: #ffffff;
+}
+
+.buttonStart:default:hover{
+  /*  -fx-background-color: #219297;*/
+}
+.pane {
+    -fx-background-image: url("../images/21.jpg");
+    -fx-background-color:transparent
+}
+.background{
+    -fx-background-color: #1d1d1d;
+}

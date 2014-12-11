@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<TabPane fx:id="mainWindowTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.allexx9.controller.MainController">
+  <tabs>
+    <Tab fx:id="testTab" text="Test">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Label fx:id="welcomeLabel" contentDisplay="TEXT_ONLY" layoutX="74.0" layoutY="30.0" prefHeight="64.0" prefWidth="497.0" textAlignment="CENTER" />
+                  <Label fx:id="question" contentDisplay="CENTER" layoutX="9.0" layoutY="85.0" prefHeight="142.0" prefWidth="582.0" text="вопрос" textAlignment="CENTER" />
+                  <Label fx:id="yes" layoutX="150.0" layoutY="301.0" text="Да">
+                     <font>
+                        <Font size="21.0" />
+                     </font></Label>
+                  <Label fx:id="no" layoutX="442.0" layoutY="301.0" text="Нет">
+                     <font>
+                        <Font size="21.0" />
+                     </font></Label>
+                  <Button fx:id="start" layoutX="272.0" layoutY="144.0" mnemonicParsing="false" text="Старт!" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab fx:id="resultTab" text="Result">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="371.0" prefWidth="555.0">
+               <children>
+                  <BarChart layoutX="-1.0" prefHeight="378.0" prefWidth="600.0">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </BarChart>
+               </children></AnchorPane>
+      </content>
+    </Tab>
+      <Tab fx:id="settingsTab" text="Settings">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+        </content>
+      </Tab>
+      <Tab fx:id="helpTab" text="help">
+         <!--<content>-->
+            <!--<StackPane prefHeight="150.0" prefWidth="200.0">-->
+               <!--<children>-->
+                  <!--<WebView prefHeight="200.0" prefWidth="200.0" fx:id="webEngine" />-->
+               <!--</children>-->
+            <!--</StackPane>-->
+         <!--</content>-->
+      </Tab>
+  </tabs>
+</TabPane>
