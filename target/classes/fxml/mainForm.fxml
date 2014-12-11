@@ -13,7 +13,7 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <Label fx:id="welcomeLabel" contentDisplay="TEXT_ONLY" layoutX="74.0" layoutY="30.0" prefHeight="64.0" prefWidth="497.0" textAlignment="CENTER" />
+                  <Label fx:id="welcomeLabel" contentDisplay="TEXT_ONLY" layoutX="47.0" layoutY="32.0" prefHeight="64.0" prefWidth="497.0" textAlignment="CENTER" />
                   <Label fx:id="question" contentDisplay="CENTER" layoutX="33.0" layoutY="44.0" prefHeight="228.0" prefWidth="524.0" text="вопрос" textAlignment="JUSTIFY" wrapText="true">
                      <font>
                         <Font size="16.0" />
@@ -50,7 +50,7 @@
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
                   <ListView fx:id="typeListView" layoutX="14.0" layoutY="14.0" prefHeight="347.0" prefWidth="429.0" />
-                  <ToggleButton fx:id="typeSelectToggleButton" layoutX="471.0" layoutY="14.0" mnemonicParsing="false" text="ToggleButton" />
+                  <ToggleButton fx:id="typeSelectToggleButton" layoutX="471.0" layoutY="14.0" mnemonicParsing="false" text="Выключить" />
                   <Button layoutX="534.0" layoutY="332.0" mnemonicParsing="false" text="Button" />
                   <Button layoutX="463.0" layoutY="332.0" mnemonicParsing="false" text="Button" />
                </children></AnchorPane>

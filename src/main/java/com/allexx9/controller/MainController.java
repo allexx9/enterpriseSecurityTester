@@ -1,5 +1,7 @@
 package com.allexx9.controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -38,8 +40,11 @@ public class MainController {
     private static final String FILENAME = "/questions.base";
     private static HashMap<Integer, Boolean> testProperties = new HashMap<Integer, Boolean>();
     private static Record[] recordsArray;
+    private static Record[] fullRecordsArray;
+    private static List<Integer> integerQuestionTypes = new ArrayList<Integer>();
     private static Record currentRecord;
     private static int questionNumber;
+    private static int stringCount;
     private static final Logger logger = LogManager.getLogger("MainController");
     @FXML private ToggleButton typeSelectToggleButton;
     @FXML private ListView typeListView;
@@ -61,6 +66,8 @@ public class MainController {
     List<String> typesList = new ArrayList<String>();
     @FXML
     private void initialize() throws IOException {
+        integerQuestionTypes.addAll(getIntegerQuestioinsType());
+        logger.error(integerQuestionTypes);
         typesList.addAll(getQuestionsType());
         final ObservableList<String> typesObservableList = FXCollections.observableList(typesList);
         typeListView.setItems(typesObservableList);
@@ -79,14 +86,16 @@ public class MainController {
         barChart.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
             @Override
             public void handle(javafx.scene.input.MouseEvent event) {
-                if (MouseButton.SECONDARY.equals(event.getButton())){
-                    contextMenu.show(((Node)(event.getSource())).getScene().getWindow(), event.getScreenX(), event.getScreenY());
+                if (MouseButton.SECONDARY.equals(event.getButton())) {
+                    contextMenu.show(((Node) (event.getSource())).getScene().getWindow(), event.getScreenX(), event.getScreenY());
                 }
             }
         });
         logger.error(FILENAME);
-        recordsArray = new Record[getStringCount(FILENAME)];
+        stringCount = getStringCount(FILENAME);
+        recordsArray = new Record[stringCount];
         fillRecordsArray(recordsArray, FILENAME);
+        fullRecordsArray = recordsArray.clone();
         questionNumber = 0;
         currentRecord = recordsArray[questionNumber];
         fillHashMapZero(FILENAME);
@@ -104,6 +113,14 @@ public class MainController {
         helpTab.setContent(wv);
         resultTab.setDisable(true);
         loadingHelpHtml();
+        mainWindowTabPane.getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<Tab>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
+                        filterQuestions();
+                    }
+                }
+        );
 
         typeListView.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
             @Override
@@ -115,36 +132,36 @@ public class MainController {
             }
         });
 
-
-        typeSelectToggleButton.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
+        typeSelectToggleButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
-            public void handle(javafx.scene.input.MouseEvent event) {
-                if (typeSelectToggleButton.isSelected()){
-                    typeSelectToggleButton.setSelected(false);
-                    String item = typeListView.getSelectionModel().getSelectedItem().toString();
-                    logger.error(Integer.parseInt(item.substring(item.indexOf("(")+1,item.lastIndexOf(')'))));
-                    testProperties.replace(Integer.parseInt(item.substring(item.indexOf("(")+1,item.lastIndexOf(')'))), false);
-                    logger.error(testProperties.toString());
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (oldValue){
+                    typeSelectToggleButton.setText("Выключить");
                 } else {
-                    typeSelectToggleButton.setSelected(true);
-                    String item = typeListView.getSelectionModel().getSelectedItem().toString();
-                    logger.error(Integer.parseInt(item.substring(item.indexOf("(")+1,item.lastIndexOf(')'))));
-                    testProperties.replace(Integer.parseInt(item.substring(item.indexOf("(")+1,item.lastIndexOf(')'))), true);
-                    logger.error(testProperties.toString());
+                    typeSelectToggleButton.setText("Включить");
                 }
+                String item = typeListView.getSelectionModel().getSelectedItem().toString();
+                testProperties.replace(Integer.parseInt(item.substring(item.indexOf("(")+1,item.lastIndexOf(')'))), newValue);
+                logger.error(testProperties.toString());
             }
         });
-
         start.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
             @Override
             public void handle(Event event) {
-                logger.error("ват");
-                start.setVisible(false);
-                welcomeLabel.setVisible(false);
-                question.setVisible(true);
-                yes.setVisible(true);
-                no.setVisible(true);
-                question.setText(currentRecord.getQuestion());
+                filterQuestions();
+                if (recordsArray.length==0){
+                    welcomeLabel.setText("Пожалуйста, выберите хотя бы один раздел в настройках");
+                } else
+                {
+                    start.setVisible(false);
+                    welcomeLabel.setVisible(false);
+                    question.setVisible(true);
+                    yes.setVisible(true);
+                    no.setVisible(true);
+                    filterQuestions();
+                    question.setText(currentRecord.getQuestion());
+                }
+
             }
         });
 
@@ -204,6 +221,24 @@ public class MainController {
             }
         });
         logger.error(getQuestionsType());
+    }
+
+    private void filterQuestions() {
+        List<Record> filteredQuestion = new ArrayList<Record>();
+        for (Map.Entry<Integer, Boolean> entry : testProperties.entrySet()){
+            int current_id = entry.getKey();
+            boolean state = entry.getValue();
+            if (state){
+                for (Record record:fullRecordsArray){
+                    if (record.getId()==current_id)
+                    {
+                        filteredQuestion.add(record);
+                    }
+                }
+            }
+        }
+        recordsArray = filteredQuestion.toArray(new Record[filteredQuestion.size()]);
+        logger.error(Arrays.asList(recordsArray).toString());
     }
 
 
@@ -351,6 +386,17 @@ public class MainController {
             questionsType.add(baseParts[3]+" ("+baseParts[1]+")");
             testProperties.put(Integer.parseInt(baseParts[1]), true);
             logger.error(questionsType);
+        }
+        reader.close();
+        return questionsType;
+    }
+    private Set<Integer> getIntegerQuestioinsType() throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(MainController.class.getResourceAsStream(FILENAME)));
+        String line;
+        Set<Integer> questionsType = new HashSet<Integer>();
+        while ((line = reader.readLine()) !=null){
+            String baseParts[] = line.split("==");
+            questionsType.add(Integer.parseInt(baseParts[1]));
         }
         reader.close();
         return questionsType;
