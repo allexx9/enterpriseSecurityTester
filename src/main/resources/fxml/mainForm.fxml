@@ -27,6 +27,8 @@
                         <Font size="21.0" />
                      </font></Label>
                   <Button fx:id="start" layoutX="272.0" layoutY="144.0" mnemonicParsing="false" text="Старт!" />
+                  <Label layoutX="19.0" layoutY="340.0" prefHeight="17.0" prefWidth="364.0" text="категория" fx:id="category" />
+                  <Label layoutX="450.0" layoutY="340.0" prefHeight="17.0" prefWidth="120.0" text="номер" fx:id="number" />
                </children></AnchorPane>
       </content>
     </Tab>

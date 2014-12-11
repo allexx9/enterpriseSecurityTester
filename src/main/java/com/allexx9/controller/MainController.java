@@ -43,6 +43,8 @@ public class MainController {
     private static int questionNumber;
     private static int stringCount;
     private static final Logger logger = LogManager.getLogger("MainController");
+    @FXML private Label number;
+    @FXML private Label category;
     @FXML private ToggleButton typeSelectToggleButton;
     @FXML private ListView typeListView;
     @FXML private TabPane mainWindowTabPane;
@@ -99,6 +101,8 @@ public class MainController {
         question.setVisible(false);
         yes.setVisible(false);
         no.setVisible(false);
+        number.setVisible(false);
+        category.setVisible(false);
         String welcome = "Здравствуйте, вас приветствует программа тестирования безопасности придприятия!\n Для начала теста нажмите на кнопку 'Старт'!";
         welcomeLabel.setText(welcome);
         testTab.setText("Тест");
@@ -156,8 +160,10 @@ public class MainController {
                     question.setVisible(true);
                     yes.setVisible(true);
                     no.setVisible(true);
+                    number.setVisible(true);
                     filterQuestions();
                     question.setText(currentRecord.getQuestion());
+                    number.setText("Вопрос "+(questionNumber+1)+" из "+(recordsArray.length-1));
                 }
 
             }
@@ -186,6 +192,8 @@ public class MainController {
                     hasNext();
                     logger.error(questionNumber);
                     question.setText(currentRecord.getQuestion());
+                    number.setText("Вопрос "+(questionNumber+1)+" из "+(recordsArray.length-1));
+                    category.setText("Категория: ");
 //                    question.setText(recordsArray[questionNumber].getQuestion());
                     logger.error(currentRecord);
                 }
@@ -213,6 +221,8 @@ public class MainController {
                     hasNext();
                     logger.error(questionNumber);
                     question.setText(currentRecord.getQuestion());
+                    number.setText("Вопрос "+(questionNumber+1)+" из "+(recordsArray.length-1));
+                    category.setText("Категория: ");
                     logger.error(currentRecord);
                     logger.error(questionNumber);
                 }
