@@ -33,6 +33,10 @@ import java.util.*;
  * Created by adm on 04.12.2014.
  */
 public class MainController {
+    //initialize logger
+    private static final Logger logger = LogManager.getLogger("MainController");
+
+    //values needs from perform test results
     public static HashMap<Integer,Double> testValues = new HashMap<Integer,Double>();
     private static final String FILENAME = "/questions.base";
     private static HashMap<Integer, Boolean> testProperties = new HashMap<Integer, Boolean>();
@@ -42,7 +46,8 @@ public class MainController {
     private static Record currentRecord;
     private static int questionNumber;
     private static int stringCount;
-    private static final Logger logger = LogManager.getLogger("MainController");
+
+    //fxml objects initialization
     @FXML private Label number;
     @FXML private Label category;
     @FXML private ToggleButton typeSelectToggleButton;
@@ -59,23 +64,17 @@ public class MainController {
     @FXML private Label question;
     @FXML public BarChart<String,Double> barChart;
     @FXML private CategoryAxis xAxis;
-
-
     public BarChart improvedBarChart;
     public CategoryAxis ixAxis = new CategoryAxis();
     public NumberAxis iyAxis = new NumberAxis();
-
     private ObservableList<String> categoryIds = FXCollections.observableArrayList();
     final ContextMenu contextMenu = new ContextMenu();
     List<String> typesList = new ArrayList<String>();
+
+
     @FXML
     private void initialize() throws IOException {
-
-        integerQuestionTypes.addAll(getIntegerQuestionsType());
-        logger.error(integerQuestionTypes);
-        typesList.addAll(getQuestionsType());
-        final ObservableList<String> typesObservableList = FXCollections.observableList(typesList);
-        typeListView.setItems(typesObservableList);
+        //initialize context menu
         MenuItem save = new MenuItem("Save as PNG");
         contextMenu.getItems().add(save);
         save.setOnAction(new EventHandler<ActionEvent>() {
@@ -89,7 +88,11 @@ public class MainController {
             }
         });
 
-        logger.error(FILENAME);
+
+        integerQuestionTypes.addAll(getIntegerQuestionsType());
+        typesList.addAll(getQuestionsType());
+        final ObservableList<String> typesObservableList = FXCollections.observableList(typesList);
+        typeListView.setItems(typesObservableList);
         stringCount = getStringCount(FILENAME);
         recordsArray = new Record[stringCount];
         fillRecordsArray(recordsArray, FILENAME);
@@ -97,6 +100,8 @@ public class MainController {
         questionNumber = 0;
         currentRecord = recordsArray[questionNumber];
         fillHashMapZero(FILENAME);
+
+        //set invisible buttons
         typeSelectToggleButton.setVisible(false);
         question.setVisible(false);
         yes.setVisible(false);
@@ -109,12 +114,15 @@ public class MainController {
         resultTab.setText("Результат");
         settingsTab.setText("Настройки");
         helpTab.setText("Справка");
+
+        //initialize help tab
         WebView wv = new WebView();
         helpTab.setContent(wv);
         resultTab.setDisable(true);
         loadingHelpHtml();
 
 
+        //initialize elemets listener
         mainWindowTabPane.getSelectionModel().selectedItemProperty().addListener(
                 new ChangeListener<Tab>() {
                     @Override
@@ -228,9 +236,9 @@ public class MainController {
                 }
             }
         });
-        logger.error(getQuestionsType());
     }
 
+    //filter questions from properties
     private void filterQuestions() {
         List<Record> filteredQuestion = new ArrayList<Record>();
         for (Map.Entry<Integer, Boolean> entry : testProperties.entrySet()){
@@ -249,6 +257,7 @@ public class MainController {
         logger.error(Arrays.asList(recordsArray).toString());
     }
 
+    //load html to helpTab
     private void loadingHelpHtml() throws FileNotFoundException {
         Task<String> reloader = new Task<String>() {
             @Override
@@ -275,7 +284,7 @@ public class MainController {
         });
         reloader.run();
     }
-
+    //deprecated
     private String returnXmlContext(InputStream filename) throws IOException{
         BufferedReader reader = new BufferedReader(new InputStreamReader(filename));
         String line;
@@ -287,6 +296,7 @@ public class MainController {
         return builder.toString();
     }
 
+    //return string number questions file
     public static int getStringCount(String filename) throws IOException{
         try {
             LineNumberReader reader = new LineNumberReader(new InputStreamReader(MainController.class.getResourceAsStream(FILENAME)));
@@ -303,11 +313,14 @@ public class MainController {
         }
         return 0;
     }
+
+    //performing data per each question
     private static void performResultData(){
         Double value = testValues.get(currentRecord.getId()) + currentRecord.getCost();
         testValues.put(currentRecord.getId(), value );
     }
 
+    //preparing hashmap befor put result
     public static void fillHashMapZero(String filename) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(MainController.class.getResourceAsStream(FILENAME)));
         String line;
@@ -318,6 +331,7 @@ public class MainController {
         reader.close();
     }
 
+    //filling the array data questions
     private void fillRecordsArray(Record[] recordsArray, String filename) throws IOException{
         BufferedReader reader = new BufferedReader(new InputStreamReader(MainController.class.getResourceAsStream(FILENAME)));
         String line;
@@ -330,6 +344,7 @@ public class MainController {
         reader.close();
     }
 
+    //jump to next question
     private static void hasNext(){
         if (questionNumber < recordsArray.length-1){
             questionNumber++;
@@ -340,22 +355,6 @@ public class MainController {
         }
     }
 
-    public void setSecurityTestData(HashMap<Integer,Double> securityTestData){
-        XYChart.Series<String, Double> series = createTestDataSeries(securityTestData);
-        barChart.getData().add(series);
-    }
-
-    private XYChart.Series<String, Double> createTestDataSeries(HashMap<Integer,Double> securityTestData) {
-        XYChart.Series<String,Double> series = new XYChart.Series<String,Double>();
-        Iterator it = securityTestData.entrySet().iterator();
-        while (it.hasNext()){
-            Map.Entry pairs = (HashMap.Entry)it.next();
-            XYChart.Data<String, Double> testData = new XYChart.Data<String, Double>(String.valueOf(pairs.getKey()), (Double) pairs.getValue());
-            it.remove();
-            series.getData().add(testData);
-        }
-        return series;
-    }
     @FXML
     public void saveAsPng() throws IOException {
         WritableImage image = barChart.snapshot(new SnapshotParameters(), null);
@@ -364,23 +363,6 @@ public class MainController {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
         } catch (IOException e) {
         }
-    }
-
-    private void performBarChart() throws IOException {
-        barChart.setBarGap(0.2);
-        List<Integer> listIDs = new ArrayList<Integer>(testValues.keySet());
-        List<String> stringListIDs = new ArrayList<String>(listIDs.size());
-        for (Integer myInt : listIDs) {
-            stringListIDs.add(String.valueOf(myInt));
-        }
-        Collections.sort(stringListIDs);
-        List<String> questionsTypeList = new ArrayList<String>();
-        questionsTypeList.addAll(getQuestionsType());
-        logger.error(stringListIDs);
-        categoryIds.addAll(questionsTypeList);
-        logger.error(categoryIds);
-        xAxis.setCategories(categoryIds);
-        setSecurityTestData(testValues);
     }
 
     private Set<String> getQuestionsType() throws IOException {
@@ -419,22 +401,6 @@ public class MainController {
             double value = testValues.get(key);
             series.getData().add(new XYChart.Data(item, value));
         }
-
-        //double aValue = 17.56;
-        //double cValue = 17.06;
-        //ObservableList<XYChart.Series<String, Double>> answer = FXCollections.observableArrayList();
-        //XYChart.Series<String, Double> aSeries = new XYChart.Series<String, Double>();
-        //XYChart.Series<String, Double> cSeries = new XYChart.Series<String, Double>();
-        //aSeries.setName("a");
-        //cSeries.setName("C");
-
-//        for (int i = 2011; i < 2021; i++) {
-//            aSeries.getData().add(new XYChart.Data(Integer.toString(i), aValue));
-//            aValue = aValue + Math.random() - .5;
-//            cSeries.getData().add(new XYChart.Data(Integer.toString(i), cValue));
-//            cValue = cValue + Math.random() - .5;
-//        }
-
         answer.addAll(series);
         return answer;
     }
