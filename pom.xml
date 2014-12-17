@@ -75,6 +75,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
+                            <encoding>UTF-8</encoding>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
                                 <resource>
@@ -92,6 +93,8 @@
         <finalName>EESecureTest</finalName>
     </build>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <exeFileName>block</exeFileName>
         <product.title>Security tester</product.title>

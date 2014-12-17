@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -286,7 +287,7 @@ public class MainController {
     }
     //deprecated
     private String returnXmlContext(InputStream filename) throws IOException{
-        BufferedReader reader = new BufferedReader(new InputStreamReader(filename));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(filename, "UTF8"));
         String line;
         StringBuilder builder = new StringBuilder();
         while ((line = reader.readLine()) !=null){
@@ -322,7 +323,8 @@ public class MainController {
 
     //preparing hashmap befor put result
     public static void fillHashMapZero(String filename) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(MainController.class.getResourceAsStream(FILENAME)));
+        InputStream inputStream = MainController.class.getResourceAsStream(FILENAME);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF8"));
         String line;
         while ((line = reader.readLine()) !=null){
             String baseParts[] = line.split("==");
@@ -333,7 +335,8 @@ public class MainController {
 
     //filling the array data questions
     private void fillRecordsArray(Record[] recordsArray, String filename) throws IOException{
-        BufferedReader reader = new BufferedReader(new InputStreamReader(MainController.class.getResourceAsStream(FILENAME)));
+        InputStream inputStream = MainController.class.getResourceAsStream(FILENAME);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF8"));
         String line;
         int stringCount = 0;
         while ((line = reader.readLine()) !=null){
@@ -364,9 +367,11 @@ public class MainController {
         } catch (IOException e) {
         }
     }
-
+    //"UTF8"
+    //MainController.class.getResourceAsStream(FILENAME)
     private Set<String> getQuestionsType() throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(MainController.class.getResourceAsStream(FILENAME)));
+        InputStream inputStream = MainController.class.getResourceAsStream(FILENAME);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF8"));
         String line;
         Set<String> questionsType = new HashSet<String>();
         while ((line = reader.readLine()) !=null){
@@ -379,7 +384,8 @@ public class MainController {
         return questionsType;
     }
     private Set<Integer> getIntegerQuestionsType() throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(MainController.class.getResourceAsStream(FILENAME)));
+        InputStream inputStream = MainController.class.getResourceAsStream(FILENAME);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF8"));
         String line;
         Set<Integer> questionsType = new HashSet<Integer>();
         while ((line = reader.readLine()) !=null){
