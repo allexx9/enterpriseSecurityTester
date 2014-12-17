@@ -26,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -48,7 +49,10 @@ public class MainController {
     private static int questionNumber;
     private static int stringCount;
 
+
     //fxml objects initialization
+    @FXML private Button stop;
+    @FXML private Button apply;
     @FXML private Label number;
     @FXML private Label category;
     @FXML private ToggleButton typeSelectToggleButton;
@@ -92,6 +96,7 @@ public class MainController {
 
         integerQuestionTypes.addAll(getIntegerQuestionsType());
         typesList.addAll(getQuestionsType());
+        java.util.Collections.sort(typesList);
         final ObservableList<String> typesObservableList = FXCollections.observableList(typesList);
         typeListView.setItems(typesObservableList);
         stringCount = getStringCount(FILENAME);
@@ -106,10 +111,11 @@ public class MainController {
         typeSelectToggleButton.setVisible(false);
         question.setVisible(false);
         yes.setVisible(false);
+        stop.setVisible(false);
         no.setVisible(false);
         number.setVisible(false);
         category.setVisible(false);
-        String welcome = "Здравствуйте, вас приветствует программа тестирования безопасности придприятия!\n Для начала теста нажмите на кнопку 'Старт'!";
+        final String welcome = "Здравствуйте, вас приветствует программа тестирования безопасности придприятия!\n Для начала теста нажмите на кнопку 'Старт'!";
         welcomeLabel.setText(welcome);
         testTab.setText("Тест");
         resultTab.setText("Результат");
@@ -164,6 +170,10 @@ public class MainController {
                     welcomeLabel.setText("Пожалуйста, выберите хотя бы один раздел в настройках");
                 } else
                 {
+                    yes.setDisable(false);
+                    no.setDisable(false);
+                    settingsTab.setDisable(true);
+                    stop.setVisible(true);
                     start.setVisible(false);
                     welcomeLabel.setVisible(false);
                     question.setVisible(true);
@@ -187,7 +197,10 @@ public class MainController {
                     logger.error(testValues);
                     yes.setDisable(true);
                     no.setDisable(true);
-                    question.setText("Тест завершен!");
+                    settingsTab.setDisable(false);
+                    welcomeLabel.setVisible(true);
+                    welcomeLabel.setText("Тест завершен!");
+                    question.setVisible(false);
                     try {
 //                        Main.showSecondStage();
 //                        ((Node)(event.getSource())).getScene().getWindow().hide();
@@ -199,6 +212,7 @@ public class MainController {
                     }
                 } else {
                     hasNext();
+                    //category.setText(currentRecord.getCategory());
                     logger.error(questionNumber);
                     question.setText(currentRecord.getQuestion());
                     number.setText("Вопрос "+(questionNumber+1)+" из "+(recordsArray.length-1));
@@ -216,7 +230,10 @@ public class MainController {
                     logger.error(testValues);
                     yes.setDisable(true);
                     no.setDisable(true);
-                    question.setText("Тест завершен!");
+                    settingsTab.setDisable(false);
+                    welcomeLabel.setVisible(true);
+                    welcomeLabel.setText("Тест завершен!");
+                    question.setVisible(false);
                     try {
                         logger.error("завершено");
                         initializeBarChart();
@@ -234,6 +251,42 @@ public class MainController {
                     category.setText("Категория: ");
                     logger.error(currentRecord);
                     logger.error(questionNumber);
+                }
+            }
+        });
+
+        apply.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+            @Override
+            public void handle(Event event) {
+                filterQuestions();
+            }
+        });
+
+        stop.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, new EventHandler<javafx.scene.input.MouseEvent>() {
+            @Override
+            public void handle(javafx.scene.input.MouseEvent event) {
+                settingsTab.setDisable(false);
+                typeSelectToggleButton.setVisible(false);
+                question.setVisible(false);
+                yes.setVisible(false);
+                stop.setVisible(false);
+                no.setVisible(false);
+                number.setVisible(false);
+                category.setVisible(false);
+                String welcome = "Здравствуйте, вас приветствует программа тестирования безопасности придприятия!\n Для начала теста нажмите на кнопку 'Старт'!";
+                welcomeLabel.setText(welcome);
+                testTab.setText("Тест");
+                resultTab.setText("Результат");
+                settingsTab.setText("Настройки");
+                helpTab.setText("Справка");
+                start.setVisible(true);
+                welcomeLabel.setVisible(true);
+                questionNumber = 0;
+                currentRecord = recordsArray[questionNumber];
+                try {
+                    fillHashMapZero(FILENAME);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -341,6 +394,7 @@ public class MainController {
         int stringCount = 0;
         while ((line = reader.readLine()) !=null){
             String baseParts[] = line.split("==");
+            logger.error(baseParts[3]);
             recordsArray[stringCount] = new Record(baseParts[0],Integer.parseInt(baseParts[1]),Double.parseDouble(baseParts[2]));
             stringCount++;
         }
