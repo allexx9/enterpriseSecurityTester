@@ -7,28 +7,29 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane fx:id="mainWindowTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.allexx9.controller.MainController">
+<TabPane fx:id="mainWindowTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.allexx9.controller.MainController">
   <tabs>
     <Tab fx:id="testTab" text="Test">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <Label fx:id="welcomeLabel" contentDisplay="TEXT_ONLY" layoutX="47.0" layoutY="32.0" prefHeight="64.0" prefWidth="497.0" textAlignment="CENTER" />
-                  <Label fx:id="question" contentDisplay="CENTER" layoutX="33.0" layoutY="44.0" prefHeight="228.0" prefWidth="524.0" text="вопрос" textAlignment="JUSTIFY" wrapText="true">
+                  <Label fx:id="welcomeLabel" contentDisplay="TEXT_ONLY" layoutX="52.0" layoutY="189.0" prefHeight="64.0" prefWidth="497.0" textAlignment="CENTER" />
+                  <Label fx:id="question" contentDisplay="CENTER" layoutX="34.0" layoutY="170.0" prefHeight="228.0" prefWidth="524.0" text="вопрос" textAlignment="JUSTIFY" wrapText="true">
                      <font>
                         <Font size="16.0" />
                      </font></Label>
-                  <Label fx:id="yes" layoutX="150.0" layoutY="301.0" text="Да">
+                  <Label fx:id="yes" layoutX="134.0" layoutY="469.0" text="Да">
                      <font>
                         <Font size="21.0" />
                      </font></Label>
-                  <Label fx:id="no" layoutX="442.0" layoutY="301.0" text="Нет">
+                  <Label fx:id="no" layoutX="426.0" layoutY="469.0" text="Нет">
                      <font>
                         <Font size="21.0" />
                      </font></Label>
-                  <Button fx:id="start" layoutX="272.0" layoutY="144.0" mnemonicParsing="false" text="Старт!" />
-                  <Label layoutX="19.0" layoutY="340.0" prefHeight="17.0" prefWidth="364.0" text="категория" fx:id="category" />
-                  <Label layoutX="450.0" layoutY="340.0" prefHeight="17.0" prefWidth="120.0" text="номер" fx:id="number" />
+                  <Button fx:id="start" layoutX="271.0" layoutY="323.0" mnemonicParsing="false" text="Старт!" />
+                  <Label fx:id="category" layoutX="14.0" layoutY="633.0" prefHeight="17.0" prefWidth="364.0" text="категория" />
+                  <Label fx:id="number" layoutX="460.0" layoutY="633.0" prefHeight="17.0" prefWidth="120.0" text="номер" />
+                  <Button fx:id="stop" layoutX="436.0" layoutY="14.0" mnemonicParsing="false" text="Остановить(и сбросить)" />
                </children></AnchorPane>
       </content>
     </Tab>
@@ -51,10 +52,9 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <ListView fx:id="typeListView" layoutX="14.0" layoutY="14.0" prefHeight="347.0" prefWidth="429.0" />
-                  <ToggleButton fx:id="typeSelectToggleButton" layoutX="471.0" layoutY="14.0" mnemonicParsing="false" text="Выключить" />
-                  <Button layoutX="534.0" layoutY="332.0" mnemonicParsing="false" text="Button" />
-                  <Button layoutX="463.0" layoutY="332.0" mnemonicParsing="false" text="Button" />
+                  <ListView fx:id="typeListView" layoutX="14.0" layoutY="14.0" prefHeight="640.0" prefWidth="455.0" />
+                  <ToggleButton fx:id="typeSelectToggleButton" layoutX="495.0" layoutY="14.0" mnemonicParsing="false" text="Выключить" />
+                  <Button fx:id="apply" layoutX="511.0" layoutY="629.0" mnemonicParsing="false" text="Apply" />
                </children></AnchorPane>
         </content>
       </Tab>
